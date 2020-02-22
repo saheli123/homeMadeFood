@@ -16,9 +16,13 @@ class CreateFoodItemsTable extends Migration
         Schema::create('food_items', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->text('slug');
+            $table->string('dish_type');//veg or non veg
+            $table->string('cuisine_type');//indian/chineese etc
+            $table->dateTime('delivery_time');//indian/chineese etc
+            $table->text('picture');
             $table->text('detail');
             $table->double('price');
-            $table->string('delivery_type');
             $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 

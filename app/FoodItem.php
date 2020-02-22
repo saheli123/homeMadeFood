@@ -8,7 +8,7 @@ class FoodItem extends Model
 {
     //
     protected $fillable = [
-        'name', 'detail', 'delivery_type','price'
+        'name','delivery_time','picture', 'detail','slug', 'dish_type','cuisine_type','price','user_id'
     ];
     public function reviews()
     {

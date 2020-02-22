@@ -16,4 +16,12 @@ class UserController extends Controller
 
         return response()->json($cook);
     }
+    public function getCookById($id=0){
+        $cook=[];
+        if($id!=0){
+            $cook=User::find($id);
+        }
+
+        return response()->json($cook);
+    }
 }
