@@ -14,3 +14,21 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+
+Route::apiResource('/products','FoodItemController');
+
+Route::get('/cooks/{search?}','UserController@getCooks');
+Route::get('/cookDetails/{id}','UserController@getCookById');
+Route::get('/dishes/{cookId}','FoodItemController@getDishes');
+
+Route::get('/searchFood/{food?}','FoodItemController@searchFood');
+Route::group(['prefix' => 'products'],function(){
+
+  Route::apiResource('/{product}/reviews','ReviewController');
+
+});
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
