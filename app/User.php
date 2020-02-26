@@ -39,4 +39,12 @@ class User extends Authenticatable implements MustVerifyEmail
     public function dishes(){
         return $this->hasMany(FoodItem::class);
     }
+
+    public function profile(){
+        return $this->hasOne(Profile::class);
+    }
+
+    public function contact() {
+        return $this->hasOne(Contact::class);
+    }
 }
