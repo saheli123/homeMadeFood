@@ -17,10 +17,10 @@ class CreateProfilesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->text('bio');
-            $table->string('image');
-            $table->string('facebook');
-            $table->string('twitter');
+            $table->text('bio')->nullable();
+            $table->string('image')->nullable();
+            $table->string('facebook')->nullable();
+            $table->string('twitter')->nullable();
             $table->timestamps();
         });
     }
