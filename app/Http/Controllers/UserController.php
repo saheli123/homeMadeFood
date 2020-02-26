@@ -9,9 +9,9 @@ class UserController extends Controller
     //
     public function getCooks($search=''){
         if($search!=""){
-            $cook=User::where('name',"like",$search."%")->get();
+            $cook=User::where('name',"like",$search."%")->has("dishes")->withCount('dishes')->get();
         }else{
-            $cook=User::get();
+            $cook=User::has("dishes")->withCount('dishes')->get();
         }
 
         return response()->json($cook);
