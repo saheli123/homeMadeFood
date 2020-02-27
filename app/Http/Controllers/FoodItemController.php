@@ -39,7 +39,7 @@ class FoodItemController extends Controller
             return $currentPage;
         });
 
-        return FoodItemCollection::collection(FoodItem::where('user_id', $cookId)->paginate(5));
+        return FoodItemCollection::collection(FoodItem::where('user_id', $cookId)->simplePaginate(5));
     }
 
     public function store(FoodItemRequest $request)

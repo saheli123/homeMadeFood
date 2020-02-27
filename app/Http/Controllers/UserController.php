@@ -19,7 +19,7 @@ class UserController extends Controller
     public function getCookById($id=0){
         $cook=[];
         if($id!=0){
-            $cook=User::find($id);
+            $cook=User::withCount('dishes')->find($id);
         }
 
         return response()->json($cook);
