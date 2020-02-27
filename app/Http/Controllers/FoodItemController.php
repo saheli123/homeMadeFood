@@ -19,16 +19,16 @@ class FoodItemController extends Controller
         $this->middleware('auth:api')->except('index', 'show', 'searchFood', 'getDishes');
     }
 
-
     public function index()
     {
-
         return FoodItemCollection::collection(FoodItem::paginate(5));
     }
+
     public function searchFood($food = '')
     {
         return FoodItemCollection::collection(FoodItem::where('name', 'like', $food . '%')->paginate(5));
     }
+    
     public function getDishes(Request $request, $cookId = '')
     {
         // get the current page
