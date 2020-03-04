@@ -19,7 +19,7 @@ class CreateFoodItemsTable extends Migration
             $table->text('slug');
             $table->string('dish_type');//veg or non veg
             $table->string('cuisine_type');//indian/chineese etc
-            $table->dateTime('delivery_time');//indian/chineese etc
+            $table->dateTime('delivery_time');
             $table->text('picture');
             $table->text('detail');
             $table->double('price');
