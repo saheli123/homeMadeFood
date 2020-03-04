@@ -26,7 +26,7 @@ class FoodItemCollection extends Resource
             // 'discount' => $this->discount,
             'rating' => $this->reviews->count() > 0 ? round($this->reviews->sum('star')/$this->reviews->count(),2) : 'No rating yet',
             'href' => [
-               'link' => route('products.show',$this->id)
+               'link' => route('dishes.show',$this->id)
             ]
         ];
     }

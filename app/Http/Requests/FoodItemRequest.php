@@ -25,9 +25,9 @@ class FoodItemRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255|unique:food_items',
-            'description' => 'required',
+            'details' => 'required',
             'price' => 'required|max:10',
-            'delivery_type' => 'required',
+            'delivery_time' => 'required',
         ];
     }
 }

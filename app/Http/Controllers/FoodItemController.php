@@ -28,7 +28,7 @@ class FoodItemController extends Controller
     {
         return FoodItemCollection::collection(FoodItem::where('name', 'like', $food . '%')->paginate(5));
     }
-    
+
     public function getDishes(Request $request, $cookId = '')
     {
         // get the current page
@@ -45,11 +45,18 @@ class FoodItemController extends Controller
     public function store(FoodItemRequest $request)
     {
         $product = new FoodItem;
+        //,'delivery_time','picture', 'detail','slug', 'dish_type','cuisine_type','price','user_id'
         $product->name = $request->name;
-        $product->detail = $request->description;
+        $product->slug = get_unique_dish_slug($request->name);
+
+        $product->detail = $request->details;
         $product->price = $request->price;
-        $product->stock = $request->stock;
-        $product->discount = $request->discount;
+        $product->picture="img/food_default.jpg";
+
+        $product->dish_type = $request->dish_type;
+        $product->cuisine_type = $request->cuisine_type;
+        $product->delivery_time = $request->delivery_time;
+        $product->user_id = $request->user_id;
 
         $product->save();
 
@@ -60,9 +67,18 @@ class FoodItemController extends Controller
         ], Response::HTTP_CREATED);
     }
 
-    public function show(FoodItem $product)
+    public function show(Request $request,$cookId)
     {
-        return new FoodItemResource($product);
+       // return new FoodItemResource($product);
+        // get the current page
+        $currentPage = $request->get('page') ? $request->get('page') : 1;
+
+        // set the current page
+        \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($currentPage) {
+            return $currentPage;
+        });
+
+        return FoodItemCollection::collection(FoodItem::where('user_id', $cookId)->simplePaginate(5));
     }
 
     public function update(Request $request, FoodItem $product)

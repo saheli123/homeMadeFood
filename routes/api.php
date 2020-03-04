@@ -24,15 +24,16 @@ Route::group([
         Route::get('user', 'API\RegisterController@user');
     });
 });
-Route::apiResource('/products','FoodItemController');
 
 Route::get('/cooks/{search?}','UserController@getCooks');
 Route::get('/cookDetails/{id}','UserController@getCookById');
-Route::get('/dishes/{cookId}','FoodItemController@getDishes');
+ //Route::get('/dishes/{cookId}','FoodItemController@getDishes');
 
 Route::get('/searchFood/{food?}','FoodItemController@searchFood');
-Route::group(['prefix' => 'products'],function(){
+Route::apiResource('/dishes','FoodItemController');
 
-  Route::apiResource('/{product}/reviews','ReviewController');
+// Route::group(['prefix' => 'products'],function(){
 
-});
+//   Route::apiResource('/{product}/reviews','ReviewController');
+
+// });

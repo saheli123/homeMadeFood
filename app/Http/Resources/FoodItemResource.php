@@ -16,15 +16,19 @@ class FoodItemResource extends Resource
     {
         return [
             'name' => $this->name,
-            'description' => $this->detail,
-            'price' => $this->price,
+            'price'=>$this->price,
+            'details'=>$this->detail,
+            'picture'=>url($this->picture),
+            'delivery_time'=>$this->delivery_time,
+            'dish_type'=>$this->dish_type,
+            'cuisine_type'=>$this->cuisine_type,
             // 'stock' => $this->stock == 0 ? 'Out of stock' : $this->stock,
             // 'discount' => $this->discount,
             // 'totalPrice' => round((1-($this->discount/100)) * $this->price,2),
             'rating' => $this->reviews->count() > 0 ? round($this->reviews->sum('star')/$this->reviews->count(),2) : 'No rating yet',
-            'href' => [
-               'reviews' => route('reviews.index',$this->id)
-            ]
+            // 'href' => [
+            //    'reviews' => route('reviews.index',$this->id)
+            // ]
         ];
     }
 }
