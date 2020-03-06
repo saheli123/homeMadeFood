@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Input;
+use Symfony\Component\HttpFoundation\Response;
+use App\Profile;
 
 class ProfileController extends Controller
 {
@@ -58,6 +62,39 @@ class ProfileController extends Controller
     public function edit($id)
     {
         //
+    }
+    public function uploadProfilePicture(Request $request)
+    {
+        try {
+            $image = $request->file("file");
+            $user_id = $request->get('user_id');
+            $fileName = $request->get("file_name");
+            $fileName = 'media/profile_' . $user_id . "_" . $fileName;
+            $img = Image::make($image)->save(public_path('img/') . $fileName);
+
+            if ($img) {
+                $profileStore = User::find($user_id)->profile;
+                if ($profileStore) {
+                    $profileStore->image = 'img/' . $fileName;
+                    $profileStore->save();
+                } else {
+                    $profile = new Profile();
+                    $profile->user_id = $user_id;
+                    $profile->image = 'img/' . $fileName;
+                    $profile->save();
+                }
+            }
+            return response([
+                'success' => 'Uploaded successfully',
+                'data' => $fileName
+
+            ], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response([
+                'error' => $e->getMessage()
+
+            ], Response::HTTP_CREATED);
+        }
     }
 
     /**

@@ -18,7 +18,7 @@ class FoodItemCollection extends Resource
             'name' => $this->name,
             'price'=>$this->price,
             'details'=>$this->detail,
-            'picture'=>url($this->picture),
+            'picture'=>$this->picture?url($this->picture):url('img/food_default.jpg'),
             'delivery_time'=>$this->delivery_time,
             'dish_type'=>$this->dish_type,
             'cuisine_type'=>$this->cuisine_type,

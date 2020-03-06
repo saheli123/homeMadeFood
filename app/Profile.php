@@ -8,7 +8,7 @@ class Profile extends Model
 {
     protected $table = 'profiles';
 
-    protected $fillable = ['bio', 'facebook', 'twitter'];
+    protected $fillable = ['bio', 'facebook', 'twitter','image'];
 
     public function user() {
         return $this->belongsTo(User::class);
