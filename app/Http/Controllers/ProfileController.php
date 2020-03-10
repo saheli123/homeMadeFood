@@ -86,7 +86,7 @@ class ProfileController extends Controller
             }
             return response([
                 'success' => 'Uploaded successfully',
-                'data' => $fileName
+                'data' => url('img/'.$fileName)
 
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {

@@ -24,10 +24,14 @@ Route::group([
         Route::get('user', 'API\RegisterController@user');
     });
 });
+
 Route::group([
     'middleware' => 'auth:api'
 ], function () {
     Route::post("/uploadPicture", "ProfileController@uploadProfilePicture");
+    Route::get('/profile/{user_id}', 'UserController@GetProfileData');
+    Route::post('/updateContact', 'UserController@updateContact');
+
 });
 
 Route::get('/cooks/{search?}', 'UserController@getCooks');

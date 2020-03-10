@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\API;
-
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\User;
@@ -69,7 +70,8 @@ class RegisterController extends BaseController
      */
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        return response(new UserResource($request->user()), Response::HTTP_CREATED);
+      //  return response()->json($request->user());
     }
 
 }
