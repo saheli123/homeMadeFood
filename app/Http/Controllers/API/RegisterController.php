@@ -39,7 +39,7 @@ class RegisterController extends BaseController
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $authenticated_user = Auth::user();
             $user = User::find($authenticated_user->id);
-            $tokenResult = $user->createToken('Personal Access Token');
+            $tokenResult = $user->createToken('Phorons');
             $token = $tokenResult->token;
             if ($request->remember_me)
                // $token->expires_at = Carbon::now()->addWeeks(1);
