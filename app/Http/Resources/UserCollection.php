@@ -18,6 +18,7 @@ class UserCollection extends Resource
             'id'=> $this->id,
             'name'=> $this->name,
             'email' => $this->email,
+            'bio'=> $this->profile && $this->profile->bio?$this->profile->bio:"",
             'dishType'=>$this->profile?$this->profile->dish_type:"",
 
             'image'=>$this->profile && $this->profile->image?url($this->profile->image):url('img/food_default.jpg'),

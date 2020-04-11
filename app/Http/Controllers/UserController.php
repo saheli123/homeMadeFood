@@ -25,6 +25,36 @@ class UserController extends Controller
 
         ], Response::HTTP_CREATED);
     }
+    public function updateProfile(Request $request){
+        try{
+            $user=User::find($request->get("user_id"));
+            $user->name=$request->get("name");
+            $user->save();
+            $profile=$user->profile;
+            if(!$profile){
+                $profile=new Profile();
+                $profile->user_id=$request->get("user_id");
+            }
+
+
+            $profile->bio=$request->get("bio");
+            $profile->dish_type=$request->get("dish_type");
+
+            $profile->save();
+            return response([
+
+                'data' => "successfully updated"
+
+            ], Response::HTTP_CREATED);
+        }catch(\Exception $e){
+            return response([
+
+                'data' => $e->getMessage()
+
+            ], Response::HTTP_CREATED);
+        }
+
+    }
     public function updateContact(Request $request){
         try{
             $contact=User::find($request->get("user_id"))->contact;

@@ -31,6 +31,8 @@ Route::group([
     Route::post("/uploadPicture", "ProfileController@uploadProfilePicture");
     Route::get('/profile/{user_id}', 'UserController@GetProfileData');
     Route::post('/updateContact', 'UserController@updateContact');
+    Route::post('/updateProfile', 'UserController@updateProfile');
+
     Route::post("/saveCart","CartController@addToCart");
     Route::get("/getCart/{userId}","CartController@getCart");
     Route::apiResource('/checkout', 'OrderController');
