@@ -51,25 +51,44 @@ class FoodItemController extends Controller
 
         $product->detail = $request->details;
         $product->price = $request->price;
-        $product->picture="img/food_default.jpg";
+        $product->unit = $request->unit;
+        $product->picture = "img/food_default.jpg";
 
         $product->dish_type = $request->dish_type;
         $product->cuisine_type = $request->cuisine_type;
-        $product->delivery_time = $request->delivery_time;
+        $product->delivery_time = $request->delivery_time && $request->delivery_time!=='Invalid date'?$request->delivery_time:null;
+        $product->delivery_type = $request->delivery_type;
         $product->user_id = $request->user_id;
-
         $product->save();
+        if ($request->delivery_type != "Delivery") {
+
+
+            $contact = \App\User::find($request->get("user_id"))->contact;
+            if (!$contact) {
+                $contact = new \App\Contact();
+                $contact->user_id = $request->get("user_id");
+            }
+
+            $contact->country = $request->get("country");
+            $contact->state = $request->get("state");
+            $contact->city = $request->get("city") && $request->get("city") != "other" ? $request->get("city") : ($request->get("cityName") ? $request->get("cityName") : "");
+            $contact->pincode = $request->get("pincode");
+            $contact->phone = $request->get("phone") ? $request->get("phone") : 'Not provided';
+            $contact->address_line_1 = $request->get("address_line_1") ? $request->get("address_line_1") : 'Not provided';
+            $contact->save();
+        }
 
         return response([
 
-            'data' => new FoodItemResource($product)
+            'data' => new FoodItemResource($product),
+            'totalDish'=>\App\User::find($request->get("user_id"))->dishes->count()
 
         ], Response::HTTP_CREATED);
     }
 
-    public function show(Request $request,$cookId)
+    public function show(Request $request, $cookId)
     {
-       // return new FoodItemResource($product);
+        // return new FoodItemResource($product);
         // get the current page
         $currentPage = $request->get('page') ? $request->get('page') : 1;
 

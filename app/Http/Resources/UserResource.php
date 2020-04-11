@@ -18,12 +18,15 @@ class UserResource extends Resource
             'id'=> $this->id,
             'name'=> $this->name,
             'email' => $this->email,
+            'dishType'=>$this->profile?$this->profile->dish_type:"",
+
             'image'=>$this->profile && $this->profile->image?url($this->profile->image):url('img/food_default.jpg'),
             'country' => $this->contact?$this->contact->country:NULL,
             'city' => $this->contact?$this->contact->city:NULL,
             'state' => $this->contact?$this->contact->state:NULL,
             'pincode' => $this->contact?$this->contact->pincode:NULL,
-            "dishesCount"=>$this->dishes->count()
+            "dishesCount"=>$this->dishes->count(),
+            "notification"=>$this->unreadNotifications
         ];
 
     }

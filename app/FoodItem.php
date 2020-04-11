@@ -8,10 +8,13 @@ class FoodItem extends Model
 {
     //
     protected $fillable = [
-        'name','delivery_time','picture', 'detail','slug', 'dish_type','cuisine_type','price','user_id'
+        'name','delivery_time','delivery_type','picture', 'detail','slug', 'dish_type','cuisine_type','price',"unit",'user_id'
     ];
     public function reviews()
     {
     	return $this->hasMany(Review::class,'product_id');
+    }
+    public function cook(){
+        return $this->hasOne(\App\User::class,"user_id");
     }
 }

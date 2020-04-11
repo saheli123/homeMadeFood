@@ -15,9 +15,13 @@ class FoodItemCollection extends Resource
     public function toArray($request)
     {
         return [
+            'id'=>$this->id,
             'name' => $this->name,
-            'price'=>$this->price,
+            'price'=>$this->price.($this->unit?"/".$this->unit:""),
+            'unit'=>$this->unit,
+            'user_id'=>$this->user_id,
             'details'=>$this->detail,
+            "delivery_type"=>$this->delivery_type,
             'picture'=>$this->picture?url($this->picture):url('img/food_default.jpg'),
             'delivery_time'=>$this->delivery_time,
             'dish_type'=>$this->dish_type,

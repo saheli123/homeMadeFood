@@ -31,6 +31,11 @@ Route::group([
     Route::post("/uploadPicture", "ProfileController@uploadProfilePicture");
     Route::get('/profile/{user_id}', 'UserController@GetProfileData');
     Route::post('/updateContact', 'UserController@updateContact');
+    Route::post("/saveCart","CartController@addToCart");
+    Route::get("/getCart/{userId}","CartController@getCart");
+    Route::apiResource('/checkout', 'OrderController');
+    Route::get("/orders/{userId}","OrderController@getOrdersByCustomer");
+    Route::post("/markasreadnotification","UserController@setMarkAsReadNotification");
 
 });
 
@@ -40,6 +45,8 @@ Route::get('/cookDetails/{id}', 'UserController@getCookById');
 
 Route::get('/searchFood/{food?}', 'FoodItemController@searchFood');
 Route::apiResource('/dishes', 'FoodItemController');
+
+
 //Route::apiResource('/cooks', 'UserController');
 
 // Route::group(['prefix' => 'products'],function(){

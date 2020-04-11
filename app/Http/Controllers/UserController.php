@@ -74,4 +74,15 @@ class UserController extends Controller
 
         return response()->json($cook);
     }
+    public function setMarkAsReadNotification(Request $request){
+        $notification = User::find($request->user_id)->notifications()->find($request->notification_id);
+        if($notification) {
+            $notification->markAsRead();
+        }
+        return response([
+
+            'data' =>"marked as read"
+
+        ], Response::HTTP_CREATED);
+    }
 }

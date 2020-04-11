@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API;
+
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+
 class RegisterController extends BaseController
 {
     //
@@ -30,6 +32,18 @@ class RegisterController extends BaseController
         $user = User::create($input);
         $success['token'] =  $user->createToken('Phorons')->accessToken;
         $success['name'] =  $user->name;
+        //save contact details
+
+        $contact = new \App\Contact();
+        $contact->user_id = $user->id;
+
+        $contact->country = $request->get("country");
+        $contact->state = $request->get("state");
+        $contact->city = $request->get("city") && $request->get("city") != "other" ? $request->get("city") : ($request->get("cityName") ? $request->get("cityName") : "");
+        $contact->pincode = $request->get("pincode");
+        $contact->phone = $request->get("phone") ? $request->get("phone") : 'Not provided';
+        $contact->address_line_1="Not provided";
+        $contact->save();
 
         return $this->sendResponse($success, 'User register successfully.');
     }
@@ -42,8 +56,8 @@ class RegisterController extends BaseController
             $tokenResult = $user->createToken('Phorons');
             $token = $tokenResult->token;
             if ($request->remember_me)
-               // $token->expires_at = Carbon::now()->addWeeks(1);
-            $token->save();
+                // $token->expires_at = Carbon::now()->addWeeks(1);
+                $token->save();
             return response()->json([
                 'access_token' => $tokenResult->accessToken,
                 'token_type' => 'Bearer',
@@ -71,7 +85,6 @@ class RegisterController extends BaseController
     public function user(Request $request)
     {
         return response(new UserResource($request->user()), Response::HTTP_CREATED);
-      //  return response()->json($request->user());
+        //  return response()->json($request->user());
     }
-
 }

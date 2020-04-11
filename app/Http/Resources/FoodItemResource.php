@@ -16,10 +16,12 @@ class FoodItemResource extends Resource
     {
         return [
             'name' => $this->name,
-            'price'=>$this->price,
+            'price'=>$this->price.($this->unit?"/".$this->unit:""),
+            'unit'=>$this->unit,
             'details'=>$this->detail,
             'picture'=>url($this->picture),
             'delivery_time'=>$this->delivery_time,
+            "delivery_type"=>$this->delivery_type,
             'dish_type'=>$this->dish_type,
             'cuisine_type'=>$this->cuisine_type,
             // 'stock' => $this->stock == 0 ? 'Out of stock' : $this->stock,
