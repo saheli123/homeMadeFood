@@ -9,10 +9,10 @@ use App\Profile;
 use App\Contact;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
-
 class UserController extends Controller
 {
     //
+
     public function index(Request $request){
 
         return UserCollection::collection(User::all());

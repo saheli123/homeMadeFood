@@ -10,10 +10,14 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Auth\VerifiesEmails;
+use Illuminate\Auth\Events\Verified;
 
 class RegisterController extends BaseController
 {
     //
+    use VerifiesEmails;
+    public $successStatus = 200;
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -42,9 +46,9 @@ class RegisterController extends BaseController
         $contact->city = $request->get("city") && $request->get("city") != "other" ? $request->get("city") : ($request->get("cityName") ? $request->get("cityName") : "");
         $contact->pincode = $request->get("pincode");
         $contact->phone = $request->get("phone") ? $request->get("phone") : 'Not provided';
-        $contact->address_line_1="Not provided";
+        $contact->address_line_1 = "Not provided";
         $contact->save();
-
+        $user->sendApiEmailVerificationNotification();
         return $this->sendResponse($success, 'User register successfully.');
     }
 
@@ -53,18 +57,24 @@ class RegisterController extends BaseController
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $authenticated_user = Auth::user();
             $user = User::find($authenticated_user->id);
-            $tokenResult = $user->createToken('Phorons');
-            $token = $tokenResult->token;
-            if ($request->remember_me)
-                // $token->expires_at = Carbon::now()->addWeeks(1);
-                $token->save();
-            return response()->json([
-                'access_token' => $tokenResult->accessToken,
-                'token_type' => 'Bearer',
-                // 'expires_at' => Carbon::parse(
-                //     $tokenResult->token->expires_at
-                // )->toDateTimeString()
-            ]);
+            if ($user->email_verified_at !== NULL) {
+
+
+                $tokenResult = $user->createToken('Phorons');
+                $token = $tokenResult->token;
+                if ($request->remember_me)
+                    // $token->expires_at = Carbon::now()->addWeeks(1);
+                    $token->save();
+                return response()->json([
+                    'access_token' => $tokenResult->accessToken,
+                    'token_type' => 'Bearer',
+                    // 'expires_at' => Carbon::parse(
+                    //     $tokenResult->token->expires_at
+                    // )->toDateTimeString()
+                ]);
+            }else{
+                return $this->sendError('Please Verify Email.', ['error' => 'Please Verify Email']);
+            }
         } else {
             return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
         }
