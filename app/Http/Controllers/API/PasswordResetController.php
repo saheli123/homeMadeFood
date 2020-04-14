@@ -98,7 +98,7 @@ class PasswordResetController extends BaseController
         $user->password = Hash::make($request->password);
         $user->save();
         $passwordReset->delete();
-        $user->notify(new PasswordResetSuccess($passwordReset));
+        $user->notify(new PasswordResetSuccess());
         return response()->json($user);
     }
 }

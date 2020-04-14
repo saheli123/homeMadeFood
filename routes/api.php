@@ -39,18 +39,19 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => 'auth:api'
+    'middleware' => ['auth:api','verified']
 ], function () {
-    Route::post("/uploadPicture", "ProfileController@uploadProfilePicture")->middleware('verified');
-    Route::get('/profile/{user_id}', 'UserController@GetProfileData')->middleware('verified');
-    Route::post('/updateContact', 'UserController@updateContact')->middleware('verified');
-    Route::post('/updateProfile', 'UserController@updateProfile')->middleware('verified');
+    Route::post("/uploadPicture", "ProfileController@uploadProfilePicture");
+    Route::get('/profile/{user_id}', 'UserController@GetProfileData');
+    Route::post('/updateContact', 'UserController@updateContact');
+    Route::post('/resetPassword', 'UserController@updatePassword');
+    Route::post('/updateProfile', 'UserController@updateProfile');
 
-    Route::post("/saveCart", "CartController@addToCart")->middleware('verified');
-    Route::get("/getCart/{userId}", "CartController@getCart")->middleware('verified');
-    Route::apiResource('/checkout', 'OrderController')->middleware('verified');
-    Route::get("/orders/{userId}", "OrderController@getOrdersByCustomer")->middleware('verified');
-    Route::post("/markasreadnotification", "UserController@setMarkAsReadNotification")->middleware('verified');
+    Route::post("/saveCart", "CartController@addToCart");
+    Route::get("/getCart/{userId}", "CartController@getCart");
+    Route::apiResource('/checkout', 'OrderController');
+    Route::get("/orders/{userId}", "OrderController@getOrdersByCustomer");
+    Route::post("/markasreadnotification", "UserController@setMarkAsReadNotification");
 });
 
 Route::get('/cooks/{search?}', 'UserController@getCooks');

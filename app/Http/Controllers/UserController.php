@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 use App\User;
+use App\Notifications\PasswordResetSuccess;
 use App\Profile;
 use App\Contact;
+use App\Http\Controllers\API\BaseController;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
-class UserController extends Controller
+class UserController extends BaseController
 {
     //
 
@@ -24,6 +27,26 @@ class UserController extends Controller
             'data' => new UserResource($user)
 
         ], Response::HTTP_CREATED);
+    }
+    public function updatePassword(Request $request){
+        try{
+
+            $current_password=$request->get("current_password");
+            $user=User::find($request->get("user_id"));
+            //dd($user);
+            if(Hash::check($current_password,$user->password)){
+                $user->password=Hash::make($request->get("password"));
+                $user->save();
+                $user->notify(new PasswordResetSuccess());
+                return response()->json('Password updated successfully');
+            }else{
+                return $this->sendError('Wrong password');
+            }
+
+
+        }catch(\Exception $e){
+            return $this->sendError('Wrong Password');
+        }
     }
     public function updateProfile(Request $request){
         try{
