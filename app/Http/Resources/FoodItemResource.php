@@ -15,8 +15,9 @@ class FoodItemResource extends Resource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
-            'price'=>$this->price.($this->unit?"/".$this->unit:""),
+            'price'=>$this->price,
             'unit'=>$this->unit,
             'details'=>$this->detail,
             'picture'=>url($this->picture),

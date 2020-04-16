@@ -6,13 +6,14 @@ use App\Http\Requests\FoodItemRequest;
 use App\Http\Resources\FoodItemCollection;
 use App\Http\Resources\FoodItemResource;
 use App\FoodItem;
+use App\Http\Controllers\API\BaseController;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request as Input;
 
-class FoodItemController extends Controller
+class FoodItemController extends BaseController
 {
     public function __construct()
     {
@@ -44,7 +45,17 @@ class FoodItemController extends Controller
 
     public function store(FoodItemRequest $request)
     {
-        $product = new FoodItem;
+        if (empty($request->id)) {
+            $product = new FoodItem;
+            $product->user_id = $request->user_id;
+        } else {
+            $product = FoodItem::find($request->id);
+           // dd($product->user_id);
+            if ($product->user_id != $request->user_id) {
+                return $this->sendError("Sorry wrong dish");
+            }
+        }
+
         //,'delivery_time','picture', 'detail','slug', 'dish_type','cuisine_type','price','user_id'
         $product->name = $request->name;
         $product->slug = get_unique_dish_slug($request->name);
@@ -56,9 +67,10 @@ class FoodItemController extends Controller
 
         $product->dish_type = $request->dish_type;
         $product->cuisine_type = $request->cuisine_type;
-        $product->delivery_time = $request->delivery_time && $request->delivery_time!=='Invalid date'?$request->delivery_time:null;
+        $product->delivery_time = $request->delivery_time && $request->delivery_time !== 'Invalid date' ? $request->delivery_time : null;
         $product->delivery_type = $request->delivery_type;
-        $product->user_id = $request->user_id;
+
+
         $product->save();
         if ($request->delivery_type != "Delivery") {
 
@@ -81,11 +93,18 @@ class FoodItemController extends Controller
         return response([
 
             'data' => new FoodItemResource($product),
-            'totalDish'=>\App\User::find($request->get("user_id"))->dishes->count()
+            'totalDish' => \App\User::find($request->get("user_id"))->dishes->count()
 
         ], Response::HTTP_CREATED);
     }
+    public function showDish($dishId)
+    {
+        return response([
 
+            new FoodItemResource(FoodItem::find($dishId))
+
+        ], Response::HTTP_CREATED);
+    }
     public function show(Request $request, $cookId)
     {
         // return new FoodItemResource($product);

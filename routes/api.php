@@ -46,6 +46,7 @@ Route::group([
     Route::post('/updateContact', 'UserController@updateContact');
     Route::post('/resetPassword', 'UserController@updatePassword');
     Route::post('/updateProfile', 'UserController@updateProfile');
+    Route::get('/showDish/{dishId}', 'FoodItemController@showDish');
 
     Route::post("/saveCart", "CartController@addToCart");
     Route::get("/getCart/{userId}", "CartController@getCart");
