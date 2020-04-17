@@ -122,10 +122,10 @@ class UserController extends BaseController
     {
         $cook = [];
         if ($id != 0) {
-            $cook = User::with("contact","profile")->withCount('dishes as dishesCount')->find($id);
+            $cook = User::find($id);
         }
 
-        return response()->json($cook);
+        return response()->json(new UserResource($cook));
     }
     public function setMarkAsReadNotification(Request $request){
         $notification = User::find($request->user_id)->notifications()->find($request->notification_id);

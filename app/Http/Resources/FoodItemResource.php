@@ -19,6 +19,7 @@ class FoodItemResource extends Resource
             'name' => $this->name,
             'price'=>$this->price,
             'unit'=>$this->unit,
+            'user_id'=>$this->user_id,
             'details'=>$this->detail,
             'picture'=>url($this->picture),
             'delivery_time'=>$this->delivery_time,
