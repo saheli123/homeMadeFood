@@ -17,7 +17,7 @@ class FoodItemController extends BaseController
 {
     public function __construct()
     {
-        $this->middleware('auth:api')->except('index', 'show', 'searchFood', 'getDishes');
+        $this->middleware('auth:api')->except('index', 'show','showDish', 'searchFood', 'getDishes');
     }
 
     public function index()

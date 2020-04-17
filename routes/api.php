@@ -38,6 +38,8 @@ Route::group([
     });
 });
 
+
+
 Route::group([
     'middleware' => ['auth:api','verified']
 ], function () {
@@ -46,7 +48,6 @@ Route::group([
     Route::post('/updateContact', 'UserController@updateContact');
     Route::post('/resetPassword', 'UserController@updatePassword');
     Route::post('/updateProfile', 'UserController@updateProfile');
-    Route::get('/showDish/{dishId}', 'FoodItemController@showDish');
 
     Route::post("/saveCart", "CartController@addToCart");
     Route::get("/getCart/{userId}", "CartController@getCart");
@@ -56,6 +57,7 @@ Route::group([
 });
 
 Route::get('/cooks/{search?}', 'UserController@getCooks');
+Route::get('showDish/{dishId}', 'FoodItemController@showDish');
 Route::get('/cookDetails/{id}', 'UserController@getCookById');
 //Route::get('/dishes/{cookId}','FoodItemController@getDishes');
 
