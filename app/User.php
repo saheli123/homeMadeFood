@@ -56,6 +56,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(\App\Order::class, "customer_id");
     }
+    public function ordersbycustomer()
+    {
+        return $this->hasManyThrough(\App\OrderProduct::class, \App\FoodItem::class,"user_id","product_id","id");
+    }
     public function sendApiEmailVerificationNotification()
     {
         $this->notify(new VerifyApiEmail); // my notification

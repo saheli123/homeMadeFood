@@ -10,6 +10,7 @@ use App\User;
 use Illuminate\Support\Facades\DB;
 use App\OrderProduct;
 use App\Http\Resources\OrderCollection;
+use App\Http\Resources\OrderedDishesResource;
 use App\Notifications\Checkout;
 
 class OrderController extends Controller
@@ -23,6 +24,10 @@ class OrderController extends Controller
     {
         //
     }
+    public function getOrderDetailsByOrderId(Request $request, $orderId = 0)
+    {
+        return OrderedDishesResource::collection(OrderProduct::where("order_id", $orderId)->get());
+    }
     public function getOrdersByCustomer(Request $request, $userId = 0)
     {
 
@@ -35,7 +40,30 @@ class OrderController extends Controller
         });
         return OrderCollection::collection(Order::where('customer_id', $userId)->orderBy("updated_at", "desc")->simplePaginate(5));
     }
+    public function totalOrders($type = "cook", $userId = 0)
+    {
+        if ($type == "cook") {
+            $orders = User::find($userId)->ordersbycustomer->groupBy("order_id")->count();
+        }else{
+            $orders=Order::where('customer_id', $userId)->count();
+        }
+        return response($orders, Response::HTTP_CREATED);
+    }
+    public function getOrdersByCook(Request $request, $userId = 0)
+    {
 
+        // get the current page
+        $currentPage = $request->get('page') ? $request->get('page') : 1;
+
+        // set the current page
+        \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($currentPage) {
+            return $currentPage;
+        });
+        $orders = User::find($userId)->ordersbycustomer->pluck("order_id")->toArray();
+
+
+        return OrderCollection::collection(Order::whereIn("id", $orders)->orderBy("updated_at", "desc")->simplePaginate(5));
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -70,8 +98,8 @@ class OrderController extends Controller
             ]);
             $cookId = 0;
             //dd($order);
-            \Cart::session($request->userId)->getContent()->each(function ($item) use (&$order,&$cookId) {
-                if($cookId==0){
+            \Cart::session($request->userId)->getContent()->each(function ($item) use (&$order, &$cookId) {
+                if ($cookId == 0) {
                     $cookId = $item->associatedModel->user_id;
                 }
 
@@ -85,14 +113,14 @@ class OrderController extends Controller
             if (!\Cart::session($request->userId)->isEmpty()) {
                 \Cart::session($request->userId)->clear();
             }
-            $cook=User::find($cookId);
-            $customer=User::find($request->userId);
+            $cook = User::find($cookId);
+            $customer = User::find($request->userId);
             DB::commit();
-            $cook->notify(new Checkout($customer,$order));
-          //  event(new CheckOutEvent(User::find($request->userId),$order));
+            $cook->notify(new Checkout($customer, $order));
+            //  event(new CheckOutEvent(User::find($request->userId),$order));
             return response([
 
-                'data' => "Order haved been placed successfully. ".User::find($cookId)->name. " will contact you as soon as possible."
+                'data' => "Order haved been placed successfully. " . User::find($cookId)->name . " will contact you as soon as possible."
 
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {

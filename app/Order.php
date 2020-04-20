@@ -13,4 +13,7 @@ class Order extends Model
     public function ordered_dish(){
         return $this->hasMany(\App\OrderProduct::class);
     }
+    public function customer(){
+        return $this->hasOne(\App\User::class,"id","customer_id");
+    }
 }
