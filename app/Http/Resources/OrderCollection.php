@@ -17,9 +17,13 @@ class OrderCollection extends Resource
         return [
             'id'=>$this->id,
             'customer'=>$this->customer->name,
+            'customer_url'=>"/viewProfile/".$this->customer->slug,
+            'billing_phone'=>$this->billing_phone,
+            'delivery_time'=>$this->delivery_time,
             'billing_address'=>$this->billing_address.",".$this->billing_city.",".$this->billing_state.",".$this->billing_country.",".$this->billing_pincode,
             // 'dishes'=>$this->ordered_dish()->with("dish")->get(),
             'cook'=>\App\User::find($this->ordered_dish()->first()->dish->user_id)->name,
+            'cook_url'=>"/viewProfile/".\App\User::find($this->ordered_dish()->first()->dish->user_id)->slug,
             'status'=>$this->status==0?"Pending":($this->status==1?"Processing":"Deilivered"),
         ];
     }

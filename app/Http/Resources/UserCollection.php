@@ -18,6 +18,7 @@ class UserCollection extends Resource
             'id'=> $this->id,
             'name'=> $this->name,
             'email' => $this->email,
+            'slug'=>$this->slug,
             'bio'=> $this->profile && $this->profile->bio?$this->profile->bio:"",
             'dishType'=>$this->profile?$this->profile->dish_type:"",
 
@@ -26,7 +27,14 @@ class UserCollection extends Resource
             'city' => $this->contact?$this->contact->city:NULL,
             'state' => $this->contact?$this->contact->state:NULL,
             'pincode' => $this->contact?$this->contact->pincode:NULL,
-            "dishesCount"=>$this->dishes->count(),
+            'timezone'=>$this->timezone,
+            "dishesCount"=>$this->dishes()->where(
+                function ($q) {
+                    $today=\Carbon\Carbon::now()->setTimezone($this->timezone)->toDateTimeString();
+                    $q->where('delivery_time', '>=', $today)
+                    ->orWhere('delivery_end_time', '>=', $today)
+                        ->orWhereNull('delivery_time');
+                })->count(),
             "notification"=>$this->loadMissing('notifications'),
         ];
 

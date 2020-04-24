@@ -45,6 +45,8 @@ Route::group([
 ], function () {
     Route::post("/uploadPicture", "ProfileController@uploadProfilePicture");
     Route::get('/profile/{user_id}', 'UserController@GetProfileData');
+    Route::get('/public-profile/{slug}', 'UserController@GetProfileDataBySlug');
+
     Route::post('/updateContact', 'UserController@updateContact');
     Route::post('/resetPassword', 'UserController@updatePassword');
     Route::post('/updateProfile', 'UserController@updateProfile');

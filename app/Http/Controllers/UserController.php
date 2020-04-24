@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 use App\Notifications\PasswordResetSuccess;
 use App\Profile;
 use App\Contact;
@@ -20,8 +21,18 @@ class UserController extends BaseController
 
         return UserCollection::collection(User::all());
     }
+    public function GetProfileDataBySlug($slug=""){
+        $user=User::where("slug",$slug)->first();
+
+        return response(
+
+           new UserResource($user)
+
+        , Response::HTTP_CREATED);
+    }
     public function GetProfileData($user_id=0){
         $user=User::find($user_id);
+
         return response([
 
             'data' => new UserResource($user)
@@ -52,6 +63,7 @@ class UserController extends BaseController
         try{
             $user=User::find($request->get("user_id"));
             $user->name=$request->get("name");
+            $user->slug= get_unique_user_slug($user->name);
             $user->save();
             $profile=$user->profile;
             if(!$profile){
@@ -80,7 +92,12 @@ class UserController extends BaseController
     }
     public function updateContact(Request $request){
         try{
-            $contact=User::find($request->get("user_id"))->contact;
+            $user=User::find($request->get("user_id"));
+            if($request->get("timezone")){
+                $user->timezone=$request->get("timezone");
+                $user->save();
+            }
+            $contact=$user->contact;
             if(!$contact){
                 $contact=new Contact();
                 $contact->user_id=$request->get("user_id");

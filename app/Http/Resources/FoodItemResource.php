@@ -23,6 +23,7 @@ class FoodItemResource extends Resource
             'details'=>$this->detail,
             'picture'=>url($this->picture),
             'delivery_time'=>$this->delivery_time,
+            'delivery_end_time'=>$this->delivery_end_time,
             "delivery_type"=>$this->delivery_type,
             'dish_type'=>$this->dish_type,
             'cuisine_type'=>$this->cuisine_type,

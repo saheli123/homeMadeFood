@@ -14,6 +14,7 @@ class FoodItemCollection extends Resource
      */
     public function toArray($request)
     {
+
         return [
             'id'=>$this->id,
             'name' => $this->name,
@@ -24,6 +25,7 @@ class FoodItemCollection extends Resource
             "delivery_type"=>$this->delivery_type,
             'picture'=>$this->picture?url($this->picture):url('img/food_default.jpg'),
             'delivery_time'=>$this->delivery_time,
+            'delivery_end_time'=>$this->delivery_end_time,
             'dish_type'=>$this->dish_type,
             'cuisine_type'=>$this->cuisine_type,
             // 'totalPrice' => round((1-($this->discount/100)) * $this->price,2),

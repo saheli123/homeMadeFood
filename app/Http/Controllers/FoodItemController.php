@@ -17,7 +17,7 @@ class FoodItemController extends BaseController
 {
     public function __construct()
     {
-        $this->middleware('auth:api')->except('index', 'show','showDish', 'searchFood', 'getDishes');
+        $this->middleware('auth:api')->except('index', 'show', 'showDish', 'searchFood', 'getDishes');
     }
 
     public function index()
@@ -39,8 +39,18 @@ class FoodItemController extends BaseController
         \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($currentPage) {
             return $currentPage;
         });
-
-        return FoodItemCollection::collection(FoodItem::where('user_id', $cookId)->simplePaginate(5));
+        $today=date("Y-m-d H:m:s");
+        $query = FoodItem::where('user_id', $cookId);
+        if (Auth::id() != $cookId) {
+            $query->where(
+                function ($q) use ($today) {
+                    $q->where('delivery_time', '>=', $today)
+                    ->orWhere('delivery_end_time', '>=', $today)
+                        ->orWhereNull('delivery_time');
+                }
+            );
+        }
+        return FoodItemCollection::collection($query->orderBy('updated_at','desc')->simplePaginate(5));
     }
 
     public function store(FoodItemRequest $request)
@@ -50,7 +60,7 @@ class FoodItemController extends BaseController
             $product->user_id = $request->user_id;
         } else {
             $product = FoodItem::find($request->id);
-           // dd($product->user_id);
+            // dd($product->user_id);
             if ($product->user_id != $request->user_id) {
                 return $this->sendError("Sorry wrong dish");
             }
@@ -68,6 +78,7 @@ class FoodItemController extends BaseController
         $product->dish_type = $request->dish_type;
         $product->cuisine_type = $request->cuisine_type;
         $product->delivery_time = $request->delivery_time && $request->delivery_time !== 'Invalid date' ? $request->delivery_time : null;
+        $product->delivery_end_time = $request->delivery_end_time && $request->delivery_end_time !== 'Invalid date' ? $request->delivery_end_time : null;
         $product->delivery_type = $request->delivery_type;
 
 
@@ -110,13 +121,31 @@ class FoodItemController extends BaseController
         // return new FoodItemResource($product);
         // get the current page
         $currentPage = $request->get('page') ? $request->get('page') : 1;
+        $profileId = $request->get('profileId') ? $request->get('profileId') : 0;
 
         // set the current page
         \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($currentPage) {
             return $currentPage;
         });
+        if($profileId!=0)
+            $today=\Carbon\Carbon::now()->setTimezone(\App\User::find($profileId)->timezone)->toDateTimeString();
+        else{
+            $today=\Carbon\Carbon::now()->setTimezone(\App\User::find($cookId)->timezone)->toDateTimeString();
+        }
+            $query = FoodItem::where('user_id', $cookId);
 
-        return FoodItemCollection::collection(FoodItem::where('user_id', $cookId)->simplePaginate(5));
+        if ($profileId != $cookId) {
+            $query->where(
+                function ($q) use ($today) {
+                    $q->where('delivery_time', '>=', $today)
+                    ->orWhere('delivery_end_time', '>=', $today)
+                        ->orWhereNull('delivery_time');
+                }
+            );
+        }
+
+
+        return FoodItemCollection::collection($query->orderBy('updated_at', 'desc')->simplePaginate(5));
     }
 
     public function update(Request $request, FoodItem $product)

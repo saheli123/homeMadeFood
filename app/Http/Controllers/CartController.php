@@ -32,7 +32,7 @@ class CartController extends Controller
     public function addToCart(Request $request)
     {
         $cart = $request->cart;
-        if ($cart) {
+        if (!empty($cart)) {
             if(!\Cart::session($request->userId)->isEmpty()){
                 \Cart::session($request->userId)->clear();
             }
@@ -49,6 +49,8 @@ class CartController extends Controller
                     'associatedModel' => $product
                 ));
             }
+        }else{
+            \Cart::session($request->userId)->clear();
         }
         return response([
 

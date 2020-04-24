@@ -33,6 +33,7 @@ class RegisterController extends BaseController
 
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
+        $input['slug'] = get_unique_user_slug($request->name);
         $user = User::create($input);
         $success['token'] =  $user->createToken('Phorons')->accessToken;
         $success['name'] =  $user->name;
@@ -94,7 +95,7 @@ class RegisterController extends BaseController
      */
     public function user(Request $request)
     {
-        return response(new UserResource($request->user()), Response::HTTP_CREATED);
+        return response(new UserResource($request->user(),true), Response::HTTP_CREATED);
         //  return response()->json($request->user());
     }
 }
