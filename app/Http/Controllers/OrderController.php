@@ -12,7 +12,7 @@ use App\OrderProduct;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderedDishesResource;
 use App\Notifications\Checkout;
-
+use App\Notifications\OrderStatus;
 class OrderController extends Controller
 {
     /**
@@ -62,7 +62,7 @@ class OrderController extends Controller
         $orders = User::find($userId)->ordersbycustomer->pluck("order_id")->toArray();
 
 
-        return OrderCollection::collection(Order::whereIn("id", $orders)->orderBy("updated_at", "desc")->simplePaginate(5));
+        return OrderCollection::collection(Order::whereIn("id", $orders)->orderBy("created_at","desc")->simplePaginate(5));
     }
     /**
      * Show the form for creating a new resource.
@@ -94,6 +94,7 @@ class OrderController extends Controller
                 'billing_state' => $request->state ? $request->state : User::find($customer_id)->contact->state,
                 'billing_pincode' => $request->pincode ? $request->pincode : User::find($customer_id)->contact->pincode,
                 'billing_phone' => $request->phone,
+                'delivery_time'=>$request->delivery_time,
                 'billing_total' => \Cart::session($request->userId)->getTotal()
             ]);
             $cookId = 0;
@@ -130,7 +131,23 @@ class OrderController extends Controller
             ], Response::HTTP_CREATED);
         }
     }
-
+    public function approveCustomer(Request $request){
+        $order=Order::find($request->orderId);
+        $cook=$order->ordered_dish()->first()->dish->user_id;
+        if($cook ===$request->cookId){
+            ///only cook can approve order
+            $order->status=$request->status;//approved
+            $order->save();
+            $status=$request->status;
+            $statustxt=($status==1?"approved":($status==2?"rejected":"delivered"));
+            //need to send noti
+            $customer=User::find($order->customer_id);
+            $customer->notify(new OrderStatus(User::find($cook),$order));
+            return response(["you have ".$statustxt], Response::HTTP_CREATED);
+        }else{
+            return response("Unauthorized", 401);
+        }
+    }
     /**
      * Display the specified resource.
      *

@@ -6,25 +6,32 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class Checkout extends Notification implements ShouldQueue
+class OrderStatus extends Notification
 {
     use Queueable,ShouldQueue;
     private $sender;
     private $order;
     private $message;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($sender, $order)
+    public function __construct($sender,$order)
     {
-        //
         $this->sender = $sender;
         $this->order = $order;
-        $this->message=$this->sender->name . " order your dish.Do you want to accept his order?";
+        $status=$order->status;
+        $msg="";
+        switch($status){
+            case 1:$msg="approved";break;
+            case 2:$msg="cancelled";break;
+            case 3:$msg="delivered";break;
+
+        }
+        $this->message=$this->sender->name . ", ".$msg. " your order.";
 
     }
     public function toBroadcast($notifiable)
@@ -59,11 +66,11 @@ class Checkout extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)->greeting("Hello ".$notifiable->name." , ")
-            ->subject('Order placed #' . $this->order->id)
-            ->line($this->message)
-            ->action('View Order', "/");
-
+        ->subject('Status changed for order  #' . $this->order->id)
+        ->line($this->message)
+        ->action('View Order', "/");
     }
+
 
     /**
      * Get the array representation of the notification.
@@ -77,7 +84,7 @@ class Checkout extends Notification implements ShouldQueue
         return [
             'sender_id' => $this->sender->id,
             'order_id' => $this->order->id,
-            'url'=>'/customer',
+            'url'=>'/order',
             'image'=>$this->sender->profile && $this->sender->profile->image?url($this->sender->profile->image):url('img/food_default.jpg'),
             'message'=>$this->message
         ];

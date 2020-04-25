@@ -55,6 +55,7 @@ Route::group([
     Route::get("/getCart/{userId}", "CartController@getCart");
     Route::apiResource('/checkout', 'OrderController');
     Route::get("/orders/{userId}", "OrderController@getOrdersByCustomer");
+    Route::post("/updateOrderStatus", "OrderController@approveCustomer");
     Route::get("/ordersByCook/{userId}", "OrderController@getOrdersByCook");
     Route::get("/ordersTotal/{type}/{userId}", "OrderController@totalOrders");
 

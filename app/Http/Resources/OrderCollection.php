@@ -24,7 +24,8 @@ class OrderCollection extends Resource
             // 'dishes'=>$this->ordered_dish()->with("dish")->get(),
             'cook'=>\App\User::find($this->ordered_dish()->first()->dish->user_id)->name,
             'cook_url'=>"/viewProfile/".\App\User::find($this->ordered_dish()->first()->dish->user_id)->slug,
-            'status'=>$this->status==0?"Pending":($this->status==1?"Processing":"Deilivered"),
+            'statustxt'=>$this->status==0?"Pending":($this->status==1?"Approved":($this->status==2?"Rejected":"Delivered")),
+            'status'=>$this->status,
         ];
     }
 }
