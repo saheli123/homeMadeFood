@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Intervention\Image\Facades\Image;
 use App\Http\Requests\FoodItemRequest;
 use App\Http\Resources\FoodItemCollection;
 use App\Http\Resources\FoodItemResource;
@@ -39,18 +40,18 @@ class FoodItemController extends BaseController
         \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($currentPage) {
             return $currentPage;
         });
-        $today=date("Y-m-d H:m:s");
+        $today = date("Y-m-d H:m:s");
         $query = FoodItem::where('user_id', $cookId);
         if (Auth::id() != $cookId) {
             $query->where(
                 function ($q) use ($today) {
                     $q->where('delivery_time', '>=', $today)
-                    ->orWhere('delivery_end_time', '>=', $today)
+                        ->orWhere('delivery_end_time', '>=', $today)
                         ->orWhereNull('delivery_time');
                 }
             );
         }
-        return FoodItemCollection::collection($query->orderBy('updated_at','desc')->simplePaginate(5));
+        return FoodItemCollection::collection($query->orderBy('updated_at', 'desc')->simplePaginate(5));
     }
 
     public function store(FoodItemRequest $request)
@@ -108,6 +109,37 @@ class FoodItemController extends BaseController
 
         ], Response::HTTP_CREATED);
     }
+    public function uploadDishPicture(Request $request)
+    {
+        try {
+            $images = $request->file("files");
+            $dish_id = $request->get('dishId');
+            foreach ($images as $key=>$image) {
+                $fileName = rand(0,8).$key.".jpg";
+                $fileName = 'media/dish_' . $dish_id . "_" . $fileName;
+                $img = Image::make($image)->save(public_path('img/') . $fileName);
+
+                if ($img) {
+                    $imageStore = new \App\DishGallery();
+                    $imageStore->dish_id = $dish_id;
+                    $imageStore->image = 'img/' . $fileName;
+                    $imageStore->save();
+                }
+            }
+
+            return response([
+                'success' => 'Uploaded successfully',
+                'data' => FoodItem::find($dish_id)->images
+
+            ], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response([
+                'error' => $e->getMessage()
+
+            ], Response::HTTP_CREATED);
+        }
+    }
+
     public function showDish($dishId)
     {
         return response([
@@ -127,18 +159,18 @@ class FoodItemController extends BaseController
         \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($currentPage) {
             return $currentPage;
         });
-        if($profileId!=0)
-            $today=\Carbon\Carbon::now()->setTimezone(\App\User::find($profileId)->timezone)->toDateTimeString();
-        else{
-            $today=\Carbon\Carbon::now()->setTimezone(\App\User::find($cookId)->timezone)->toDateTimeString();
+        if ($profileId != 0)
+            $today = \Carbon\Carbon::now()->setTimezone(\App\User::find($profileId)->timezone)->toDateTimeString();
+        else {
+            $today = \Carbon\Carbon::now()->setTimezone(\App\User::find($cookId)->timezone)->toDateTimeString();
         }
-            $query = FoodItem::where('user_id', $cookId);
+        $query = FoodItem::where('user_id', $cookId);
 
         if ($profileId != $cookId) {
             $query->where(
                 function ($q) use ($today) {
                     $q->where('delivery_time', '>=', $today)
-                    ->orWhere('delivery_end_time', '>=', $today)
+                        ->orWhere('delivery_end_time', '>=', $today)
                         ->orWhereNull('delivery_time');
                 }
             );

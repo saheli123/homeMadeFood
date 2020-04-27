@@ -17,4 +17,7 @@ class FoodItem extends Model
     public function cook(){
         return $this->hasOne(\App\User::class,"user_id");
     }
+    public function images(){
+        return $this->hasMany(\App\DishGallery::class,"dish_id");
+    }
 }

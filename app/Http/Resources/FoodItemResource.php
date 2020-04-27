@@ -14,6 +14,10 @@ class FoodItemResource extends Resource
      */
     public function toArray($request)
     {
+        $imgarr=[];
+        foreach($this->images as $img){
+            $imgarr[]=url($img->image);
+        }
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -21,7 +25,8 @@ class FoodItemResource extends Resource
             'unit'=>$this->unit,
             'user_id'=>$this->user_id,
             'details'=>$this->detail,
-            'picture'=>url($this->picture),
+            'picture'=>($this->images->count()>0 && $this->images()->first()->image)?url($this->images()->first()->image):url('img/food_default.jpg'),
+            'dish_images'=>$imgarr,
             'delivery_time'=>$this->delivery_time,
             'delivery_end_time'=>$this->delivery_end_time,
             "delivery_type"=>$this->delivery_type,

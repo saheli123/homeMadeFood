@@ -23,10 +23,11 @@ class FoodItemCollection extends Resource
             'user_id'=>$this->user_id,
             'details'=>$this->detail,
             "delivery_type"=>$this->delivery_type,
-            'picture'=>$this->picture?url($this->picture):url('img/food_default.jpg'),
+            'picture'=>($this->images->count()>0 && $this->images()->first()->image)?url($this->images()->first()->image):url('img/food_default.jpg'),
             'delivery_time'=>$this->delivery_time,
             'delivery_end_time'=>$this->delivery_end_time,
             'dish_type'=>$this->dish_type,
+
             'cuisine_type'=>$this->cuisine_type,
             // 'totalPrice' => round((1-($this->discount/100)) * $this->price,2),
             // 'discount' => $this->discount,

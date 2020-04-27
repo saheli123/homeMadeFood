@@ -62,10 +62,12 @@ Route::group([
     Route::get("/orderDetails/{orderId}", "OrderController@getOrderDetailsByOrderId");
 
     Route::post("/markasreadnotification", "UserController@setMarkAsReadNotification");
+    Route::post("/uploadDishImage", "FoodItemController@uploadDishPicture");
 });
 
 Route::get('/cooks/{search?}', 'UserController@getCooks');
 Route::get('showDish/{dishId}', 'FoodItemController@showDish');
+
 Route::get('/cookDetails/{id}', 'UserController@getCookById');
 //Route::get('/dishes/{cookId}','FoodItemController@getDishes');
 
