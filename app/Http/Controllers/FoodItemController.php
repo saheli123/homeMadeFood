@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\DishGallery;
 use Intervention\Image\Facades\Image;
 use App\Http\Requests\FoodItemRequest;
 use App\Http\Resources\FoodItemCollection;
 use App\Http\Resources\FoodItemResource;
 use App\FoodItem;
 use App\Http\Controllers\API\BaseController;
+use Exception;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
@@ -109,13 +111,34 @@ class FoodItemController extends BaseController
 
         ], Response::HTTP_CREATED);
     }
+    public function deleteDishPhoto(Request $request)
+    {
+        try {
+
+
+            $imgId = $request->imageId;
+            DishGallery::find($imgId)->delete();
+            return response([
+                'success' => 'Deleted successfully',
+
+
+            ], Response::HTTP_CREATED);
+        } catch (Exception $e) {
+            return response([
+                'error' => 'Not deleted',
+
+
+            ], Response::HTTP_CREATED);
+        }
+    }
     public function uploadDishPicture(Request $request)
     {
         try {
             $images = $request->file("files");
             $dish_id = $request->get('dishId');
-            foreach ($images as $key=>$image) {
-                $fileName = rand(0,8).$key.".jpg";
+            foreach ($images as $key => $image) {
+                $date = strtotime(now());
+                $fileName = $date . $key . ".jpg";
                 $fileName = 'media/dish_' . $dish_id . "_" . $fileName;
                 $img = Image::make($image)->save(public_path('img/') . $fileName);
 

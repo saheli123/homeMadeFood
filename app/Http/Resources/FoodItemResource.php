@@ -16,7 +16,7 @@ class FoodItemResource extends Resource
     {
         $imgarr=[];
         foreach($this->images as $img){
-            $imgarr[]=url($img->image);
+            $imgarr[]=["key"=>$img->id,"value"=>url($img->image)];
         }
         return [
             'id' => $this->id,

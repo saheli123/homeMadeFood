@@ -63,6 +63,7 @@ Route::group([
 
     Route::post("/markasreadnotification", "UserController@setMarkAsReadNotification");
     Route::post("/uploadDishImage", "FoodItemController@uploadDishPicture");
+    Route::post("/deletePicture", "FoodItemController@deleteDishPhoto");
 });
 
 Route::get('/cooks/{search?}', 'UserController@getCooks');
