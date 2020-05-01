@@ -74,6 +74,7 @@ Route::get('/cookDetails/{id}', 'UserController@getCookById');
 
 Route::get('/searchFood/{food?}', 'FoodItemController@searchFood');
 Route::apiResource('/dishes', 'FoodItemController');
+Route::apiResource('/Faqs', 'FaqController');
 
 
 //Route::apiResource('/cooks', 'UserController');
