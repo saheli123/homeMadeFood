@@ -18,7 +18,10 @@ class CreateDishGallery extends Migration
             $table->string('image');
             $table->bigInteger('dish_id');
             $table->timestamps();
-            $table->foreign('dish_id')->references('id')->on('food_items');
+            
+});
+Schema::table('dish_gallery', function (Blueprint $table) {
+    $table->foreign('dish_id')->references('id')->on('food_items');
 });
     }
 
