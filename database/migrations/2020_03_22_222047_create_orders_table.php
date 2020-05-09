@@ -13,7 +13,7 @@ class CreateOrdersTable extends Migration
      */
     public function up()
     {
-        Schema::create('orders', function (Blueprint $table) {
+   Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('customer_id');
             $table->string('billing_address')->nullable();
@@ -36,8 +36,8 @@ class CreateOrdersTable extends Migration
             $table->timestamps();
 
             $table->primary('order_id','product_id');
-            $table->foreign('order_id')->references('id')->on('orders');
-        });
+	    $table->foreign('order_id')->references('id')->on('orders');
+    });
     }
 
     /**

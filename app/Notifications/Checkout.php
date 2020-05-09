@@ -10,7 +10,7 @@ use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class Checkout extends Notification implements ShouldQueue
 {
-    use Queueable,ShouldQueue;
+    use Queueable;
     private $sender;
     private $order;
     private $message;

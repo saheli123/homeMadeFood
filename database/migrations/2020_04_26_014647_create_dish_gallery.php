@@ -13,13 +13,13 @@ class CreateDishGallery extends Migration
      */
     public function up()
     {
-        Schema::create('dish_gallery', function (Blueprint $table) {
+       Schema::create('dish_gallery', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('image');
             $table->bigInteger('dish_id');
             $table->timestamps();
             $table->foreign('dish_id')->references('id')->on('food_items');
-        });
+});
     }
 
     /**

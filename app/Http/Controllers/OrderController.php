@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\CheckOutEvent;
-use App\order;
+use App\Order;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\User;
