@@ -145,10 +145,17 @@ class UserController extends BaseController
             $userarr=User::search($search)->get()->pluck("id")->toArray();
 
             $users=array_merge($userarr,$profiles,$contacts);
-            $cook = User::whereIn("id",$users)->has("dishes");
+            $cook = User::has("dishes")->whereIn("id",$users);
         } else {
             $cook = User::has("dishes");
         }
+        $cook=$cook->whereHas("dishes",function ($q) {
+            $timezone=Auth::user()?Auth::user()->timezone:"utc";
+            $today=\Carbon\Carbon::now()->setTimezone($timezone)->toDateTimeString();
+            $q->where('delivery_time', '>=', $today)
+            ->orWhere('delivery_end_time', '>=', $today)
+                ->orWhereNull('delivery_time');
+        });
         return $cook;
     }
     public function getCooks(Request $request)
