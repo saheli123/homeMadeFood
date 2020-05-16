@@ -66,14 +66,17 @@ Route::group([
     Route::post("/deletePicture", "FoodItemController@deleteDishPhoto");
 });
 
-Route::get('/cooks/{search?}', 'UserController@getCooks');
+Route::post('/cooks', 'UserController@getCooks');
 Route::get('showDish/{dishId}', 'FoodItemController@showDish');
+Route::post('/totalCook', 'UserController@getTotalCook');
 
 Route::get('/cookDetails/{id}', 'UserController@getCookById');
-//Route::get('/dishes/{cookId}','FoodItemController@getDishes');
+Route::post('/totalDish','FoodItemController@totalDish');
 
 Route::get('/searchFood/{food?}', 'FoodItemController@searchFood');
 Route::apiResource('/dishes', 'FoodItemController');
+Route::post('/searchDishes', 'FoodItemController@searchDishes');
+
 Route::apiResource('/Faqs', 'FaqController');
 
 

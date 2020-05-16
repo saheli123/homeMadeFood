@@ -21,8 +21,8 @@ class CreateContactsTable extends Migration
             $table->string('country');
             $table->string('state');
             $table->integer('pincode');
-            $table->string('address_line_1');
-            $table->string('address_line_2')->nullable();
+            $table->text('address_line_1');
+            $table->text('address_line_2')->nullable();
             $table->timestamps();
         });
     }

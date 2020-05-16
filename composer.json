@@ -16,9 +16,11 @@
         "laravel/framework": "^6.2",
         "laravel/helpers": "^1.1",
         "laravel/passport": "^8.4",
+        "laravel/scout": "^8.0",
         "laravel/tinker": "^2.0",
         "nesbot/carbon": "^2.32",
-        "pusher/pusher-php-server": "^4.1"
+        "pusher/pusher-php-server": "^4.1",
+        "yab/laravel-scout-mysql-driver": "^3.0"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

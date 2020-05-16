@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Notifications\PasswordResetSuccess;
 use App\Profile;
 use App\Contact;
+use App\Countries;
+use App\States;
+use App\Cities;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
@@ -124,14 +127,44 @@ class UserController extends BaseController
         }
 
     }
-    public function getCooks($search = '')
-    {
-        if ($search != "") {
-            $cook = User::where('name', "like", $search . "%")->has("dishes");
+    public function getTotalCook(Request $request){
+        $search=$request->post('search');
+        $cook=$this->getCookList($search);
+        return response($cook->count(), Response::HTTP_CREATED);
+    }
+    private function getCookList($search = ''){
+
+        if ($search && $search != "") {
+            $profiles=Profile::search($search)->get()->pluck("user_id")->toArray();
+
+            $countries=Countries::search($search)->get()->pluck("id")->toArray();
+            $states=States::search($search)->get()->pluck("id")->toArray();
+            $cities=Cities::search($search)->get()->pluck("id")->toArray();
+
+            $contacts=Contact::WhereIn('country',$countries)->orWhereIn('state',$states)->orWhereIn('city',$cities)->get()->pluck("user_id")->toArray();
+            $userarr=User::search($search)->get()->pluck("id")->toArray();
+
+            $users=array_merge($userarr,$profiles,$contacts);
+            $cook = User::whereIn("id",$users)->has("dishes");
         } else {
             $cook = User::has("dishes");
         }
-        return UserCollection::collection($cook->paginate(10));
+        return $cook;
+    }
+    public function getCooks(Request $request)
+    {
+        // get the current page
+        $search=$request->post('search');
+        $currentPage = $request->get('page') ? $request->get('page') : 1;
+
+        // set the current page
+        \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($currentPage) {
+            return $currentPage;
+        });
+
+        $cook=$this->getCookList($search);
+        //if($currentPage==1)
+        return UserCollection::collection($cook->simplePaginate(30));
         //return response(new UserCollection($cook), Response::HTTP_CREATED);
         //return response()->json($cook);
     }

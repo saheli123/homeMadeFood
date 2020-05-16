@@ -20,7 +20,7 @@ class FoodItemController extends BaseController
 {
     public function __construct()
     {
-        $this->middleware('auth:api')->except('index', 'show', 'showDish', 'searchFood', 'getDishes');
+        $this->middleware('auth:api')->except('index', 'show', 'showDish','searchDishes','totalDish', 'searchFood', 'getDishes');
     }
 
     public function index()
@@ -170,6 +170,46 @@ class FoodItemController extends BaseController
             new FoodItemResource(FoodItem::find($dishId))
 
         ], Response::HTTP_CREATED);
+    }
+    public function totalDish(Request $request){
+        $query=$this->getDishesList($request);
+        return response($query->count(), Response::HTTP_CREATED);
+    }
+    private function getDishesList(Request $request){
+        $profileId = $request->post('profileId') ? $request->post('profileId') : 0;
+        $cookId=$request->post('cookId') ? $request->post('cookId') : 0;
+        $search=$request->post('search') ? $request->post('search') : "";
+        if ($profileId != 0)
+        $today = \Carbon\Carbon::now()->setTimezone(\App\User::find($profileId)->timezone)->toDateTimeString();
+    else {
+        $today = \Carbon\Carbon::now()->setTimezone(\App\User::find($cookId)->timezone)->toDateTimeString();
+    }
+    $query = FoodItem::where('user_id', $cookId);
+    if($search!=""){
+        $query->where('name',"LIKE", $search."%");
+    }
+    if ($profileId != $cookId) {
+        $query->where(
+            function ($q) use ($today) {
+                $q->where('delivery_time', '>=', $today)
+                    ->orWhere('delivery_end_time', '>=', $today)
+                    ->orWhereNull('delivery_time');
+            }
+        );
+    }
+    return $query;
+    }
+    public function searchDishes(Request $request){
+        $currentPage = $request->get('page') ? $request->get('page') : 1;
+
+        // set the current page
+        \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($currentPage) {
+            return $currentPage;
+        });
+
+
+        $query=$this->getDishesList($request);
+        return FoodItemCollection::collection($query->orderBy('updated_at', 'desc')->simplePaginate(5));
     }
     public function show(Request $request, $cookId)
     {

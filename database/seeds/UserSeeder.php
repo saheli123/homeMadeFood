@@ -14,6 +14,7 @@ class UserSeeder extends Seeder
         //
         factory(App\User::class, 20)->create()->each(function ($user) {
             $user->profile()->save(factory(App\Profile::class)->make());
+            $user->contact()->save(factory(App\Contact::class)->make());
         });
     }
 }

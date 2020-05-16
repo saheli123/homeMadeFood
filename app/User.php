@@ -7,10 +7,12 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\VerifyApiEmail;
+use Laravel\Scout\Searchable;
+
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable,Searchable;
 
     /**
      * The attributes that are mass assignable.
@@ -38,6 +40,12 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function toSearchableArray()
+{
+  $array = $this->toArray();
+     
+  return array('name' => $array['name']);
+}
     public function dishes()
     {
         return $this->hasMany(FoodItem::class);
