@@ -19,7 +19,7 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'password'
 ], function () {
-    Route::post('/totalCook', 'UserController@getTotalCook');
+  //  Route::post('/totalCook', 'UserController@getTotalCook');
 
     Route::post('create', 'API\PasswordResetController@create');
     Route::get('find/{token}', 'API\PasswordResetController@find');
@@ -70,8 +70,8 @@ Route::group([
 Route::group([
 
     'middleware' => 'api',  ], function () {
-Route::post('/cooks', 'UserController@getCooks');
-Route::post('/totalCook', 'UserController@getTotalCook');
+Route::post('cooks', 'UserController@getCooks');
+Route::post('totalCook', 'UserController@getTotalCook');
     });
 Route::get('showDish/{dishId}', 'FoodItemController@showDish');
 

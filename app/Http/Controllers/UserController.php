@@ -128,7 +128,7 @@ class UserController extends BaseController
 
     }
     public function getTotalCook(Request $request){
-        $search=$request->post('search');
+        $search=$request->search;
         $cook=$this->getCookList($search);
         return response($cook->count(), Response::HTTP_CREATED);
     }
@@ -154,7 +154,7 @@ class UserController extends BaseController
     public function getCooks(Request $request)
     {
         // get the current page
-        $search=$request->post('search');
+        $search=$request->search;
         $currentPage = $request->get('page') ? $request->get('page') : 1;
 
         // set the current page
