@@ -41,7 +41,7 @@ class OrderStatus extends Notification implements ShouldQueue
             "data"=>
             ['sender_id' => $this->sender->id,
             'order_id' => $this->order->id,
-            'url'=>'/order',
+            'url'=>'http://phorons.com/#/order',
             'message'=>$this->message
             ]
         ];
@@ -68,7 +68,7 @@ class OrderStatus extends Notification implements ShouldQueue
         return (new MailMessage)->greeting("Hello ".$notifiable->name." , ")
         ->subject('Status changed for order  #' . $this->order->id)
         ->line($this->message)
-        ->action('View Order', "/");
+        ->action('View Order', "http://phorons.com/#/order");
     }
 
 
@@ -84,7 +84,7 @@ class OrderStatus extends Notification implements ShouldQueue
         return [
             'sender_id' => $this->sender->id,
             'order_id' => $this->order->id,
-            'url'=>'/order',
+            'url'=>'http://phorons.com/#/order',
             'image'=>$this->sender->profile && $this->sender->profile->image?url($this->sender->profile->image):url('img/food_default.jpg'),
             'message'=>$this->message
         ];

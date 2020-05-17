@@ -34,7 +34,7 @@ class Checkout extends Notification implements ShouldQueue
             "data"=>
             ['sender_id' => $this->sender->id,
             'order_id' => $this->order->id,
-            'url'=>'/order',
+            'url'=>'http://phorons.com/#/customer',
             'message'=>$this->message
             ]
         ];
@@ -61,7 +61,7 @@ class Checkout extends Notification implements ShouldQueue
         return (new MailMessage)->greeting("Hello ".$notifiable->name." , ")
             ->subject('Order placed #' . $this->order->id)
             ->line($this->message)
-            ->action('View Order', "/");
+            ->action('View Order', "http://phorons.com/#/customer");
 
     }
 
@@ -77,7 +77,7 @@ class Checkout extends Notification implements ShouldQueue
         return [
             'sender_id' => $this->sender->id,
             'order_id' => $this->order->id,
-            'url'=>'/customer',
+            'url'=>'http://phorons.com/#/customer',
             'image'=>$this->sender->profile && $this->sender->profile->image?url($this->sender->profile->image):url('img/food_default.jpg'),
             'message'=>$this->message
         ];
