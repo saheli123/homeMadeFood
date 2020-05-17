@@ -21,7 +21,7 @@ class UserCollection extends Resource
             'slug'=>$this->slug,
             'bio'=> $this->profile && $this->profile->bio?$this->profile->bio:"",
             'dishType'=>$this->profile?$this->profile->dish_type:"",
-
+            'url'=>"/viewProfile/".$this->slug,
             'image'=>$this->profile && $this->profile->image?url($this->profile->image):url('img/food_default.jpg'),
             'country' => $this->contact?$this->contact->country:NULL,
             'city' => $this->contact?$this->contact->city:NULL,
