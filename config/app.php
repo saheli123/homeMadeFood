@@ -174,9 +174,11 @@ return [
      App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TelescopeServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
         Darryldecode\Cart\CartServiceProvider::class,
         Yab\MySQLScout\Providers\MySQLScoutServiceProvider::class,
+        App\Providers\ContactServiceProvider::class,
     ],
 
     /*

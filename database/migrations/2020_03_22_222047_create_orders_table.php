@@ -35,8 +35,8 @@ class CreateOrdersTable extends Migration
 
             $table->timestamps();
 
-            $table->primary('order_id','product_id');
-	        
+            $table->primary(['order_id','product_id']);
+
     });
         Schema::table('orderProduct', function (Blueprint $table) {
             $table->foreign('order_id')->references('id')->on('orders');

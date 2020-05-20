@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Notifications\PasswordResetSuccess;
 use App\Profile;
 use App\Contact;
@@ -15,6 +16,8 @@ use App\States;
 use App\Cities;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\CookListCollection;
+
 use App\Http\Resources\UserResource;
 class UserController extends BaseController
 {
@@ -112,7 +115,7 @@ class UserController extends BaseController
             $contact->pincode=$request->get("pincode");
             $contact->phone=$request->get("phone")?$request->get("phone"):'Not provided';
             $contact->address_line_1=$request->get("address_line_1")?$request->get("address_line_1"):'Not provided';
-            $contact->save();
+            $contact->update();
             return response([
 
                 'data' => "successfully updated"
@@ -128,27 +131,42 @@ class UserController extends BaseController
 
     }
     public function getTotalCook(Request $request){
-        $search=$request->search;
-        $cook=$this->getCookList($search);
-        return response($cook->count(), Response::HTTP_CREATED);
+        //$search=$request->search;
+        $cook=$this->getCookList($request)?$this->getCookList($request)->count():0;
+        return response($cook, Response::HTTP_CREATED);
     }
-    private function getCookList($search = ''){
-
+    private function getCookList(Request $request){
+        $search=$request->search;
+        $lng=$request->lng;
+        $lat=$request->lat;
+        $cook=null;
         if ($search && $search != "") {
-            $profiles=Profile::search($search)->get()->pluck("user_id")->toArray();
+          //  $profiles=Profile::search($search)->get()->pluck("user_id")->toArray();
+            $cookIds=$this->findNearestCook($lat,$lng);
+            if($cookIds){
+                $cook = User::whereIn("id", $cookIds);
+            }else{
 
-            $countries=Countries::search($search)->get()->pluck("id")->toArray();
-            $states=States::search($search)->get()->pluck("id")->toArray();
-            $cities=Cities::search($search)->get()->pluck("id")->toArray();
+            }
+            // $countries=Countries::where("name","like",$search."%")->pluck("id")->toArray();
+            // $states=States::where("name","like",$search."%")->pluck("id")->toArray();
+            // $cities=Cities::where("name","like",$search."%")->pluck("id")->toArray();
+            // $contacts=new Contact();
+            // if(count($countries)>0){
+            //     $contacts=$contacts->WhereIn('country',$countries);
+            // }
+            // if(count($states)>0)
+            //     $contacts=$contacts->orWhereIn('state',$states);
+            // if(count($cities)>0)
+            //     $contacts=$contacts->orWhereIn('city',$cities);
 
-            $contacts=Contact::WhereIn('country',$countries)->orWhereIn('state',$states)->orWhereIn('city',$cities)->get()->pluck("user_id")->toArray();
-            $userarr=User::search($search)->get()->pluck("id")->toArray();
+            // $contacts=$contacts->pluck("user_id")->toArray();
 
-            $users=array_merge($userarr,$profiles,$contacts);
-            $cook = User::has("dishes")->whereIn("id",$users);
+            //$cook = User::whereIn("id", $contacts);
         } else {
-            $cook = User::has("dishes");
+            $cook = new User();
         }
+        if($cook){
         $cook=$cook->whereHas("dishes",function ($q) {
             $timezone=Auth::user()?Auth::user()->timezone:"utc";
             $today=\Carbon\Carbon::now()->setTimezone($timezone)->toDateTimeString();
@@ -156,22 +174,43 @@ class UserController extends BaseController
             ->orWhere('delivery_end_time', '>=', $today)
                 ->orWhereNull('delivery_time');
         });
-        return $cook;
+
     }
+    return $cook;
+    }
+    private function findNearestCook($lat,$lng)
+{
+    // $lat=60.79222220;
+    // $lng=-161.75583340;
+    $location = DB::table('contacts')
+        ->select('user_id', 'latitude', 'longitude', DB::raw(sprintf(
+            '(6371 * acos(cos(radians(%1$.7f)) * cos(radians(latitude)) * cos(radians(longitude) - radians(%2$.7f)) + sin(radians(%1$.7f)) * sin(radians(latitude)))) AS distance',
+            $lat,
+            $lng
+        )))
+        ->having('distance', '<',20)
+        ->orderBy('distance', 'asc')
+        ->pluck('user_id')->toArray();
+
+    return $location;
+}
     public function getCooks(Request $request)
     {
         // get the current page
         $search=$request->search;
         $currentPage = $request->get('page') ? $request->get('page') : 1;
 
+
         // set the current page
         \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($currentPage) {
             return $currentPage;
         });
 
-        $cook=$this->getCookList($search);
+        $cook=$this->getCookList($request);
         //if($currentPage==1)
-        return UserCollection::collection($cook->simplePaginate(30));
+        if($cook)
+            return CookListCollection::collection($cook->simplePaginate(30));
+        else return $this->sendError("No cook available");
         //return response(new UserCollection($cook), Response::HTTP_CREATED);
         //return response()->json($cook);
     }
@@ -195,4 +234,5 @@ class UserController extends BaseController
 
         ], Response::HTTP_CREATED);
     }
+
 }

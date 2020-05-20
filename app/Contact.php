@@ -10,7 +10,7 @@ class Contact extends Model
     use Searchable;
     protected $table = 'contacts';
 
-    protected $fillable = ['phone', 'country', 'state', 'pincode', 'address_line_1', 'address_line_2'];
+    protected $fillable = ['phone', 'country', 'state', 'pincode', 'address_line_1', 'address_line_2','latitude','longitude'];
 
     public function user() {
         return $this->belongsTo(User::class);
@@ -18,7 +18,7 @@ class Contact extends Model
     public function toSearchableArray()
     {
       $array = $this->toArray();
-         
+
       return array('country' => $array['country'],'state'=> $array['state'],'pincode'=>$array['pincode']);
     }
     public function country(){
