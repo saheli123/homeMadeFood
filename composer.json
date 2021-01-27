@@ -12,6 +12,7 @@
         "darryldecode/cart": "^4.1",
         "encore/laravel-admin": "^1.7",
         "fideloper/proxy": "^4.0",
+        "firevel/firequent": "^0.6.0",
         "intervention/image": "^2.5",
         "laravel/framework": "^6.2",
         "laravel/helpers": "^1.1",

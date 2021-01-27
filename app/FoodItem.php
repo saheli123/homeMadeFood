@@ -13,6 +13,9 @@ class FoodItem extends Model
     protected $fillable = [
         'name','delivery_time','delivery_end_time','delivery_type','picture', 'detail','slug', 'dish_type','cuisine_type','price',"unit",'user_id'
     ];
+    public function getNameAttribute($value){
+        return ucfirst($value);
+    }
     public function toSearchableArray()
     {
       $array = $this->toArray();

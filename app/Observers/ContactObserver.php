@@ -69,7 +69,7 @@ class ContactObserver
         $address.=",".$cityname.",".$statename.",".$countryName.",".$pincode;
 
         $client = new \GuzzleHttp\Client();
-        $res = $client->get("https://maps.google.com/maps/api/geocode/json?key=AIzaSyAmnhEQb6hHCIWl-diDI_thu4gENFalHyw&address=".$address);
+        $res = $client->get("https://maps.google.com/maps/api/geocode/json?key=MY_KEY&address=".$address);
         if($res){
         $data = (string) $res->getBody();
 

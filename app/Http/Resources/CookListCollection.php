@@ -17,7 +17,7 @@ class CookListCollection extends Resource
         return [
             'id'=> $this->id,
             'name'=> $this->name,
-            'dishType'=>$this->profile && $this->profile->dish_type?$this->profile->dish_type:"",
+            'dishType'=>$this->profile && $this->profile->dish_type?strtolower($this->profile->dish_type):"",
             'url'=>"/viewProfile/".$this->slug,
             'image'=>$this->profile && $this->profile->image?url($this->profile->image):url('img/food_default.jpg'),
             'country' => $this->contact?$this->contact->country:NULL,

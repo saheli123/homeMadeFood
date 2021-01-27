@@ -2,8 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Firevel\Firequent\Model;
 use Laravel\Scout\Searchable;
+//use Mpociot\Firebase\SyncsWithFirebase;
 
 
 class Profile extends Model
@@ -11,7 +12,7 @@ class Profile extends Model
     use Searchable;
     protected $table = 'profiles';
 
-    protected $fillable = ['bio', 'facebook', 'twitter','image',"dish_type"];
+    protected $fillable = ['bio', "dish_type"];
 
     public function user() {
         return $this->belongsTo(User::class);
@@ -19,7 +20,7 @@ class Profile extends Model
     public function toSearchableArray()
     {
       $array = $this->toArray();
-         
+
       return array('bio' => $array['bio']);
     }
 }

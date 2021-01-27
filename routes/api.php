@@ -68,10 +68,9 @@ Route::group([
     Route::post("/deletePicture", "FoodItemController@deleteDishPhoto");
 });
 Route::group([
-
     'middleware' => 'api',  ], function () {
-Route::post('cooks', 'UserController@getCooks');
-Route::post('totalCook', 'UserController@getTotalCook');
+            Route::post('cooks', 'UserController@getCooks');
+            Route::post('totalCook', 'UserController@getTotalCook');
     });
 Route::get('showDish/{dishId}', 'FoodItemController@showDish');
 
