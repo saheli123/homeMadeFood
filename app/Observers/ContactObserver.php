@@ -29,7 +29,7 @@ class ContactObserver
         $address.=",".$cityname.",".$statename.",".$countryName.",".$pincode;
         $query=htmlspecialchars("");
         $client = new \GuzzleHttp\Client();
-        $res = $client->get("https://maps.google.com/maps/api/geocode/json?key=MY_KEY&address=".$address);
+        $res = $client->get("https://maps.google.com/maps/api/geocode/json?key=".env('GOOGLE_API_KEY')."&address=".$address);
         $data = (string) $res->getBody();
 
         $data = json_decode($data);
@@ -69,7 +69,7 @@ class ContactObserver
         $address.=",".$cityname.",".$statename.",".$countryName.",".$pincode;
 
         $client = new \GuzzleHttp\Client();
-        $res = $client->get("https://maps.google.com/maps/api/geocode/json?key=MY_KEY&address=".$address);
+        $res = $client->get("https://maps.google.com/maps/api/geocode/json?key=".env('GOOGLE_API_KEY')."&address=".$address);
         if($res){
         $data = (string) $res->getBody();
 
