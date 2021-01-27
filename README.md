@@ -10,19 +10,20 @@ Building admin panel to manage users/orders
 <h3>How to run?</h3>
 <p>
 ##Mac Os, Ubuntu and windows users continue here:
-
-Create a database locally named homemadefood utf8_general_ci
-Download composer https://getcomposer.org/download/
-Pull Laravel/php project from git provider.
-Rename .env.example file to .envinside your project root and fill the database information. (windows wont let you do it, so you have to open your console cd your project root directory and run mv .env.example .env )
-enter database credential in env files
-Open the console and cd your project root directory
-Run composer install or php composer.phar install
-Run php artisan key:generate
-Run php artisan migrate
-Run php artisan db:seed to run seeders, if any.
-Run php artisan serve
-#####You can now access your project at localhost:8000 :) And you can run those api in Postman (it is an application to run API)
+<ul>
+    <li>Create a database locally named homemadefood utf8_general_ci</li>
+    <li>Download composer https://getcomposer.org/download/</li>
+    <li>Pull Laravel/php project from git provider.</li>
+<li>Rename .env.example file to .envinside your project root and fill the database information. (windows wont let you do it, so you have to open your console cd your project root directory and run mv .env.example .env )</li>
+<li>enter database credential in env files</li>
+<li>Open the console and cd your project root directory</li>
+<li>Run composer install or php composer.phar install</li>
+<li>Run php artisan key:generate</li>
+<li>Run php artisan migrate</li>
+<li>Run php artisan db:seed to run seeders, if any.</li>
+<li>Run php artisan serve</li>
+<li>#####You can now access your project at localhost:8000 :) And you can run those api in Postman (it is an application to run API)
+    </ul>
 </p>
 <ul>
     <li>POST http://127.0.0.1:8000/api/auth/login
