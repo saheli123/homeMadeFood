@@ -58,15 +58,11 @@ Building admin panel to manage users/orders
         "delivery_end_time": "2020-05-24 00:07:06",
         "dish_type": "non-veg",
         "cuisine_type": "Indian"
-    }
-           
-            
+    }   
     </li>
-
     <li>
      GET http://127.0.0.1:8000/api/showDish/110
-     
-    </li>
+     </li>
     <li>to search food with string 's'
      GET http://127.0.0.1:8000/api/searchFood/s
     </li>
