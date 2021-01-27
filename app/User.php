@@ -76,7 +76,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new VerifyApiEmail); // my notification
     }
     public static function getLocationFromLatLng($lat,$lng){
-       $googleapiUrl="https://maps.google.com/maps/api/geocode/json?key=AIzaSyAmnhEQb6hHCIWl-diDI_thu4gENFalHyw&latlng=".$lat.",".$lng."&sensor=false";
+       $googleapiUrl="https://maps.google.com/maps/api/geocode/json?key=key1&latlng=".$lat.",".$lng."&sensor=false";
        $data = file_get_contents($googleapiUrl);
        $data = json_decode($data);
         $add_array  = $data->results;
